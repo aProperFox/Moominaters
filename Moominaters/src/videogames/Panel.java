@@ -1,13 +1,14 @@
 package videogames;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -15,21 +16,27 @@ public class Panel  extends JPanel implements ActionListener{
 
 	private Timer timer;
 	private Character chac;
-
+	private Image img;
 	
 	private int imageCurr;
 	
 	public Panel(){
-		setBackground(Color.WHITE);
 	    addKeyListener(new TAdapter());
 	    setFocusable(true);
 	    setDoubleBuffered(true);
-
+	    ImageIcon ii = new ImageIcon("src/Backgrounds/backdrop1.png");
+	    img = ii.getImage();
+	    		
         chac = new Character();
 	    timer = new Timer(4,this);
 	    timer.start();
 	    }  
 
+	public void paintComponent(Graphics page)
+	{
+	    super.paintComponent(page);
+	    page.drawImage(img, 0, 0, null);
+	}
 	
 	public void paint(Graphics g){
 		super.paint(g);

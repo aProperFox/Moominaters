@@ -13,6 +13,7 @@ public class Character {
 	private Image[] moomin;
 	private Image[] moominl;  
 	private Image moominCurr;
+	private int dir;
 	
 	private Boolean hasJumped;
 	
@@ -24,8 +25,8 @@ public class Character {
 	public Character(){
 		hasJumped = false;
 		
-		moomin = new Image[6];
-		moominl = new Image[6];
+		moomin = new Image[7];
+		moominl = new Image[7];
 		
 		ImageIcon ii = new ImageIcon("src/Sprites/muminright1.png");
 		moomin[0] = ii.getImage();
@@ -39,7 +40,10 @@ public class Character {
 		moomin[4] = ii.getImage();
 		ii = new ImageIcon("src/Sprites/muminright6.png");
 		moomin[5] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminjumpr.png");
+		moomin[6] = ii.getImage();
 		moominCurr = moomin[0];
+		dir = 1;
 		
 		ii = new ImageIcon("src/Sprites/muminleft1.png");
 		moominl[0] = ii.getImage();
@@ -53,6 +57,8 @@ public class Character {
 		moominl[4] = ii.getImage();
 		ii = new ImageIcon("src/Sprites/muminleft6.png");
 		moominl[5] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminjumpl.png");
+		moominl[6] = ii.getImage();
 		
 		Globals.chacHeight = chacHeight;
 		Globals.chacWidth = chacWidth;
@@ -82,15 +88,26 @@ public class Character {
         }
         else if(x <= 0)
         	x = 0;
-        if(y >= Globals.height-(chacHeight+30)){
-        	y = Globals.height-(chacHeight+30);
-        	if(hasJumped == true)
+        if(y >= Globals.height-(chacHeight+50)){
+        	y = Globals.height-(chacHeight+50);
+        	if(hasJumped == true){
         		  dy = 0;
+        		  if(dir == 1)
+        			  moominCurr = moomin[imageCurr];
+        		  else
+        			  moominCurr = moominl[imageCurr];
+        	}
         }
         else if(y <= 0)
         	y = 0;
         if(dy == 0)
         	hasJumped = false;
+        if(hasJumped == true){
+        	if(dir == 1)
+        		moominCurr = moomin[6];
+        	else
+        		moominCurr = moominl[6];
+        }
         dy += 0.10;
     }
    
@@ -110,12 +127,14 @@ public class Character {
             dx = -1;
             moominCurr = moominl[imageCurr];
             imageCurr += 1;
+            dir = 0;
         }
 
         if (key == KeyEvent.VK_D) {
             dx = 1;
             moominCurr = moomin[imageCurr];
             imageCurr += 1;
+            dir = 1;
         }
 
         if (key == KeyEvent.VK_W) {
