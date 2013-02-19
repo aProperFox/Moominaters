@@ -26,7 +26,7 @@ public class Panel  extends JPanel implements ActionListener{
 	    setDoubleBuffered(true);
 
         chac = new Character();
-	    timer = new Timer(5,this);
+	    timer = new Timer(4,this);
 	    timer.start();
 	    }  
 
@@ -34,8 +34,9 @@ public class Panel  extends JPanel implements ActionListener{
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics g2d = (Graphics2D) g;
-		g2d.drawImage(chac.getMoomin(),chac.getX(),chac.getY(),100,140,null);
+		g2d.drawImage(chac.getMoomin(),chac.getX(),chac.getY(),Globals.chacWidth,Globals.chacHeight,null);
 		g.dispose();
+		
 	}
 	
     public void actionPerformed(ActionEvent e) {

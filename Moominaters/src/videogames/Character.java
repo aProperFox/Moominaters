@@ -1,8 +1,5 @@
 package videogames;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -11,11 +8,12 @@ import javax.swing.ImageIcon;
 
 public class Character {
 	public Rectangle character;
-	public int chacWidth = 12;
-	public int chacHeight = 20;
+	public int chacWidth = 100;
+	public int chacHeight = 140;
 	private Image[] moomin;
 	private Image[] moominl;  
 	private Image moominCurr;
+	
 	
 	private int x,y;
 	private int dx,dy;
@@ -38,6 +36,7 @@ public class Character {
 		ii = new ImageIcon("src/Sprites/muminright6.png");
 		moomin[5] = ii.getImage();
 		moominCurr = moomin[0];
+		
 		ii = new ImageIcon("src/Sprites/muminleft1.png");
 		moominl[0] = ii.getImage();
 		ii = new ImageIcon("src/Sprites/muminleft2.png");
@@ -51,8 +50,11 @@ public class Character {
 		ii = new ImageIcon("src/Sprites/muminleft6.png");
 		moominl[5] = ii.getImage();
 		
-		x = 400;
-		y = 320;
+		Globals.chacHeight = chacHeight;
+		Globals.chacWidth = chacWidth;
+		x = (Globals.width/2) - (Globals.chacWidth/2);
+		y = (Globals.height/2) - (Globals.chacHeight/2);
+
 		dx = 0;
 		dy = 0;
 		imageCurr = 0;
@@ -61,7 +63,7 @@ public class Character {
 	}
 	
 	public void defineObjects(){
-		character = new Rectangle(Update.width/2 - chacWidth/2,Update.height/2 - chacHeight/2);
+		character = new Rectangle(Globals.width/2 - chacWidth/2,Globals.height/2 - chacHeight/2);
 	}
 	
 	public Image getMoomin(){
@@ -71,6 +73,15 @@ public class Character {
    public void move() {
         x += dx;
         y += dy;
+        if(x >= Globals.width-chacWidth){
+        	x = Globals.width-chacWidth;	
+        }
+        else if(x <= 0)
+        	x = 0;
+        if(y >= Globals.height-chacHeight)
+        	y = Globals.height-chacHeight;
+        else if(y <= 0)
+        	y = 0;
     }
    
    public int getX(){
@@ -85,24 +96,24 @@ public class Character {
 
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
-            dx = -2;
+        if (key == KeyEvent.VK_A) {
+            dx = -1;
             moominCurr = moominl[imageCurr];
             imageCurr += 1;
         }
 
-        if (key == KeyEvent.VK_RIGHT) {
-            dx = 2;
+        if (key == KeyEvent.VK_D) {
+            dx = 1;
             moominCurr = moomin[imageCurr];
             imageCurr += 1;
         }
 
-        if (key == KeyEvent.VK_UP) {
-            dy = -2;
+        if (key == KeyEvent.VK_W) {
+            dy = -1;
         }
 
-        if (key == KeyEvent.VK_DOWN) {
-            dy = 2;
+        if (key == KeyEvent.VK_S) {
+            dy = 1;
         }
         imageCurr = imageCurr % 6;
     }
@@ -110,19 +121,19 @@ public class Character {
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
+        if (key == KeyEvent.VK_A) {
             dx = 0;
         }
 
-        if (key == KeyEvent.VK_RIGHT) {
+        if (key == KeyEvent.VK_D) {
             dx = 0;
         }
 
-        if (key == KeyEvent.VK_UP) {
+        if (key == KeyEvent.VK_W) {
             dy = 0;
         }
 
-        if (key == KeyEvent.VK_DOWN) {
+        if (key == KeyEvent.VK_S) {
             dy = 0;
         }
     }
