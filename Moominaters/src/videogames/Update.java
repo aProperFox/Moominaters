@@ -17,7 +17,7 @@ public class Update {
 		frame.setSize(width,height);
 		frame.setTitle("Moominaters");
 		frame.setLocationRelativeTo(null);
-		
+		 
 		
 		
 	}

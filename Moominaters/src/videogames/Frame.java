@@ -11,3 +11,4 @@ public class Frame extends JFrame{
 		add(panel);
 	}
 }
+ 

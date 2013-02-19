@@ -28,7 +28,7 @@ public class Panel  extends JPanel implements ActionListener{
         chac = new Character();
 	    timer = new Timer(5,this);
 	    timer.start();
-	    }
+	    } 
 
 	
 	public void paint(Graphics g){
