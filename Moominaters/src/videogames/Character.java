@@ -14,7 +14,7 @@ public class Character {
 	public int chacWidth = 12;
 	public int chacHeight = 20;
 	private Image[] moomin;
-	private Image[] moominl; 
+	private Image[] moominl;  
 	private Image moominCurr;
 	
 	private int x,y;
