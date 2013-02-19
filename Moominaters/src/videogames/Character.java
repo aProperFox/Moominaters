@@ -14,15 +14,19 @@ public class Character {
 	private Image[] moominl;  
 	private Image moominCurr;
 	
+	private Boolean hasJumped;
 	
 	private int x,y;
-	private int dx,dy;
+	private double dx,dy;
 	
 	private int imageCurr;
 	
 	public Character(){
+		hasJumped = false;
+		
 		moomin = new Image[6];
 		moominl = new Image[6];
+		
 		ImageIcon ii = new ImageIcon("src/Sprites/muminright1.png");
 		moomin[0] = ii.getImage();
 		ii = new ImageIcon("src/Sprites/muminright2.png");
@@ -72,16 +76,22 @@ public class Character {
 	
    public void move() {
         x += dx;
-        y += dy;
+        y += dy - (Globals.gravity)/2;
         if(x >= Globals.width-chacWidth){
         	x = Globals.width-chacWidth;	
         }
         else if(x <= 0)
         	x = 0;
-        if(y >= Globals.height-chacHeight)
-        	y = Globals.height-chacHeight;
+        if(y >= Globals.height-(chacHeight+30)){
+        	y = Globals.height-(chacHeight+30);
+        	if(hasJumped == true)
+        		  dy = 0;
+        }
         else if(y <= 0)
         	y = 0;
+        if(dy == 0)
+        	hasJumped = false;
+        dy += 0.10;
     }
    
    public int getX(){
@@ -109,13 +119,23 @@ public class Character {
         }
 
         if (key == KeyEvent.VK_W) {
-            dy = -1;
+            //dy = -1;
         }
 
         if (key == KeyEvent.VK_S) {
-            dy = 1;
+            //dy = 1;
         }
+       
         imageCurr = imageCurr % 6;
+        
+        if (key == KeyEvent.VK_SPACE){
+        	if(hasJumped == false){
+	        	y -= 10;
+	        	dy = -10;
+	        	hasJumped = true;
+        	}
+        	
+        }
     }
 	   
     public void keyReleased(KeyEvent e) {
@@ -130,11 +150,11 @@ public class Character {
         }
 
         if (key == KeyEvent.VK_W) {
-            dy = 0;
+           // dy = 0;
         }
 
         if (key == KeyEvent.VK_S) {
-            dy = 0;
+           //dy = 0;
         }
     }
 }
