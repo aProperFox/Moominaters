@@ -17,8 +17,7 @@ public class Panel  extends JPanel implements ActionListener{
 	private Timer timer;
 	private Character chac;
 	private Image img;
-	
-	private int imageCurr;
+
 	
 	public Panel(){
 	    addKeyListener(new TAdapter());
@@ -26,7 +25,7 @@ public class Panel  extends JPanel implements ActionListener{
 	    setDoubleBuffered(true);
 	    ImageIcon ii = new ImageIcon("src/Backgrounds/backdrop1.png");
 	    img = ii.getImage();
-	    		
+	    
         chac = new Character();
 	    timer = new Timer(4,this);
 	    timer.start();
@@ -36,6 +35,7 @@ public class Panel  extends JPanel implements ActionListener{
 	{
 	    super.paintComponent(page);
 	    page.drawImage(img, 0, 0, null);
+
 	}
 	
 	public void paint(Graphics g){

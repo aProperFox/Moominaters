@@ -130,7 +130,7 @@ public class Character {
             dir = 0;
         }
 
-        if (key == KeyEvent.VK_D) {
+        else if (key == KeyEvent.VK_D) {
             dx = 1;
             moominCurr = moomin[imageCurr];
             imageCurr += 1;
@@ -138,11 +138,13 @@ public class Character {
         }
 
         if (key == KeyEvent.VK_W) {
-            //dy = -1;
+            if(dir == 0)
+            	moominCurr = moominl[6];
+            else
+            	moominCurr = moomin[6];
         }
 
-        if (key == KeyEvent.VK_S) {
-            //dy = 1;
+        else if (key == KeyEvent.VK_S) {
         }
        
         imageCurr = imageCurr % 6;
@@ -162,14 +164,19 @@ public class Character {
 
         if (key == KeyEvent.VK_A) {
             dx = 0;
+            moominCurr= moominl[0];
         }
 
         if (key == KeyEvent.VK_D) {
             dx = 0;
+            moominCurr = moomin[0];
         }
 
         if (key == KeyEvent.VK_W) {
-           // dy = 0;
+            if(dir == 0)
+            	moominCurr = moominl[0];
+            else
+            	moominCurr = moomin[0];
         }
 
         if (key == KeyEvent.VK_S) {
