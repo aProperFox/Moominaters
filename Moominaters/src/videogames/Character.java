@@ -200,36 +200,29 @@ public class Character {
         }
     }
     
-    public int mousePressed(MouseEvent m){
-    	int ret = 0;
+    public void mousePressed(MouseEvent m){
     	int button = m.getButton();
     	mouseX = m.getX();
     	mouseY = m.getY();
     	if(button == MouseEvent.BUTTON1){
-    		ret = 1;
     	}
     	
     	if(button == MouseEvent.BUTTON2){
-    		ret = 2;
     	}
     	if(button == MouseEvent.BUTTON3){
-    		ret = 3;
     	}
-    	return ret;
     }
     
-    public int mouseReleased(MouseEvent m){
-    	int ret = 0;
+    public void mouseReleased(MouseEvent m){
     	int button = m.getButton();
 
     	if(button == MouseEvent.BUTTON1){
-    		ret = 1;
     	}
     	
     	if(button == MouseEvent.BUTTON2){
-    		ret = 2;
+
     	}
-    	return ret;
+
     }
     
 }

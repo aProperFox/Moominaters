@@ -95,16 +95,19 @@ public class Panel  extends JPanel implements ActionListener{
         }
     private class MAdapter extends MouseAdapter {
         public void mousePressed(MouseEvent m){
-        	int s = chac.mousePressed(m);
-        	if(s == 2) mag = true;
-        	if(s == 3){
+        	chac.mousePressed(m);
+        	if(m.getButton() == MouseEvent.BUTTON2)
+        		mag = true;
+        	
+        	if(m.getButton() == MouseEvent.BUTTON3){
         		if(magnify.testEnv(m.getX(), m.getY()))
         			found = true;;
         	}
         }
         public void mouseReleased(MouseEvent m){
-        	int s = chac.mouseReleased(m);
-        	if(s == 2) mag = false;
+        	chac.mouseReleased(m);
+        	if(m.getButton() == MouseEvent.BUTTON2)
+        		mag = false;
     }
   }
 
