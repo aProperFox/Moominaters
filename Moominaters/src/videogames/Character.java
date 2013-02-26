@@ -15,6 +15,8 @@ public class Character {
 	private Image[] moominl;  
 	private Image moominCurr;
 	private int dir;
+	private int level;
+	private int universe;
 	
 	public Magnify glass;
 	
@@ -24,6 +26,8 @@ public class Character {
 	private int mouseX, mouseY;
 	private int pastX, pastY;
 	private double dx,dy;
+	
+	private Boolean frozen;
 	
 	private int imageCurr;
 	
@@ -76,6 +80,7 @@ public class Character {
 
 		dx = 0;
 		dy = 0;
+		frozen = false;
 		imageCurr = 0;
 		 
 		defineObjects();
@@ -89,9 +94,19 @@ public class Character {
 		return moominCurr;
 	}
 	
+	public int getLevel(){
+		return level;
+	}
+	
+	public int getUniverse(){
+		return universe;
+	}
+	
    public void move() {
+	   if(!frozen){
         x += dx;
         y += dy - (Globals.gravity)/2;
+	   
         if(x >= Globals.width-chacWidth){
         	x = Globals.width-chacWidth;	
         }
@@ -118,6 +133,7 @@ public class Character {
         		moominCurr = moominl[6];
         }
         dy += 0.10;
+	   }
     }
    
    public int getX(){
@@ -173,6 +189,15 @@ public class Character {
         	}
         	
         }
+        
+        if (key == KeyEvent.VK_SHIFT){
+        	frozen = true;
+        }
+        
+        if (key == KeyEvent.VK_Q){
+        	if(frozen)
+        		frozen = false;
+        }
     }
 	   
     public void keyReleased(KeyEvent e) {
@@ -197,6 +222,10 @@ public class Character {
 
         if (key == KeyEvent.VK_S) {
            //dy = 0;
+        }
+        
+        if (key == KeyEvent.VK_SHIFT){
+        	frozen = false;
         }
     }
     

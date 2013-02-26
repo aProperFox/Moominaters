@@ -29,7 +29,7 @@ public class Magnify extends JPanel{
 		return img;
 		
 	}
-	public Boolean testEnv(int x, int y){
+	/*public Boolean testEnv(int x, int y){
 		if(levelNum == 1){
 			System.out.print(x + " " + y + '\r');
 			if(y > 1080-(((620*x)/645)-1200) && y < 1080-(((620*x)/645)-1310)){
@@ -38,5 +38,5 @@ public class Magnify extends JPanel{
 		}
 		
 		return false;
-	}
+	}*/
 }
