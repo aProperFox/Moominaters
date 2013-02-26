@@ -3,6 +3,7 @@ package videogames;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 
@@ -15,15 +16,20 @@ public class Character {
 	private Image moominCurr;
 	private int dir;
 	
+	public Magnify glass;
+	
 	private Boolean hasJumped;
 	
 	private int x,y;
+	private int mouseX, mouseY;
 	private double dx,dy;
 	
 	private int imageCurr;
 	
 	public Character(){
 		hasJumped = false;
+		
+		glass = new Magnify();
 		
 		moomin = new Image[7];
 		moominl = new Image[7];
@@ -118,6 +124,13 @@ public class Character {
    public int getY(){
 	   return y;
    }
+   
+   public int getMouseX(){
+	   return mouseX;
+   }
+   public int getMouseY(){
+	   return mouseY;
+   }
 
     public void keyPressed(KeyEvent e) {
 
@@ -183,4 +196,34 @@ public class Character {
            //dy = 0;
         }
     }
+    
+    public int mousePressed(MouseEvent m){
+    	int ret = 0;
+    	int button = m.getButton();
+    	mouseX = m.getX();
+    	mouseY = m.getY();
+    	if(button == MouseEvent.BUTTON1){
+    		ret = 1;
+    	}
+    	
+    	if(button == MouseEvent.BUTTON2){
+    		ret = 2;
+    	}
+    	return ret;
+    }
+    
+    public int mouseReleased(MouseEvent m){
+    	int ret = 0;
+    	int button = m.getButton();
+
+    	if(button == MouseEvent.BUTTON1){
+    		ret = 1;
+    	}
+    	
+    	if(button == MouseEvent.BUTTON2){
+    		ret = 2;
+    	}
+    	return ret;
+    }
+    
 }
