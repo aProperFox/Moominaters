@@ -23,19 +23,22 @@ public class Panel  extends JPanel implements ActionListener{
 	private Timer timer;
 	private Character chac;
 	private Image img;
-	private Boolean mag;
+	private Boolean mag, found;
+	
 
 	private Magnify magnify;
 	
 	public Panel(){
 		magnify = new Magnify();
-		mag = false;
+		mag = found = false;
 	    addKeyListener(new TAdapter());
 	    addMouseListener(new MAdapter());
 	    setFocusable(true);
 	    setDoubleBuffered(true);
 	    ImageIcon ii = new ImageIcon("src/Backgrounds/backdrop1.png");
 	    img = ii.getImage();
+		Globals.height = ii.getIconHeight();
+		Globals.width = ii.getIconWidth();
 	    
         chac = new Character();
 	    timer = new Timer(4,this);
@@ -53,12 +56,14 @@ public class Panel  extends JPanel implements ActionListener{
 		super.paint(g);
 		Graphics g2d = (Graphics2D) g;
 		g2d.drawImage(chac.getMoomin(),chac.getX(),chac.getY(),Globals.chacWidth,Globals.chacHeight,null);
-		if(mag){
+		if(found){
+			g2d.drawImage(magnify.getImg(), 0,0, Globals.width,Globals.height,null);
+		}
+		else if(mag){
 			PointerInfo a = MouseInfo.getPointerInfo();
 			Point b = a.getLocation();
 			int x = (int) b.getX();
 			int y = (int) b.getY();
-			System.out.print(x + " " + y + '\r');
 			Ellipse2D circle = new Ellipse2D.Float(x-25,y-25,50,50);
 			g2d.setClip(circle);
 			g2d.drawImage(magnify.getImg(), 0,0, Globals.width,Globals.height,null);
@@ -66,6 +71,7 @@ public class Panel  extends JPanel implements ActionListener{
 		g.dispose();
 		
 	}
+	
 	
     public void actionPerformed(ActionEvent e) {
         chac.move();
@@ -81,6 +87,8 @@ public class Panel  extends JPanel implements ActionListener{
 
         public void keyPressed(KeyEvent e) {
             chac.keyPressed(e);
+            if(e.getKeyCode() == KeyEvent.VK_F)
+            	found = false;
         }
         
 
@@ -89,6 +97,10 @@ public class Panel  extends JPanel implements ActionListener{
         public void mousePressed(MouseEvent m){
         	int s = chac.mousePressed(m);
         	if(s == 2) mag = true;
+        	if(s == 3){
+        		if(magnify.testEnv(m.getX(), m.getY()))
+        			found = true;;
+        	}
         }
         public void mouseReleased(MouseEvent m){
         	int s = chac.mouseReleased(m);

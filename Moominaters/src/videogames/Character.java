@@ -9,8 +9,8 @@ import javax.swing.ImageIcon;
 
 public class Character {
 	public Rectangle character;
-	public int chacWidth = 100;
-	public int chacHeight = 140;
+	public int chacWidth;
+	public int chacHeight;
 	private Image[] moomin;
 	private Image[] moominl;  
 	private Image moominCurr;
@@ -22,6 +22,7 @@ public class Character {
 	
 	private int x,y;
 	private int mouseX, mouseY;
+	private int pastX, pastY;
 	private double dx,dy;
 	
 	private int imageCurr;
@@ -66,6 +67,8 @@ public class Character {
 		ii = new ImageIcon("src/Sprites/muminjumpl.png");
 		moominl[6] = ii.getImage();
 		
+		chacWidth = Globals.width/13;
+		chacHeight = Globals.height/6;
 		Globals.chacHeight = chacHeight;
 		Globals.chacWidth = chacWidth;
 		x = (Globals.width/2) - (Globals.chacWidth/2);
@@ -94,8 +97,8 @@ public class Character {
         }
         else if(x <= 0)
         	x = 0;
-        if(y >= Globals.height-(chacHeight+50)){
-        	y = Globals.height-(chacHeight+50);
+        if(y >= Globals.height-(chacHeight+70)){
+        	y = Globals.height-(chacHeight+70);
         	if(hasJumped == true){
         		  dy = 0;
         		  if(dir == 1)
@@ -208,6 +211,9 @@ public class Character {
     	
     	if(button == MouseEvent.BUTTON2){
     		ret = 2;
+    	}
+    	if(button == MouseEvent.BUTTON3){
+    		ret = 3;
     	}
     	return ret;
     }
