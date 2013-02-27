@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 public class Frame extends JFrame{
 	public Environment env;
 	public Panel panel;
-
 	
 	public Frame(){
 		panel = new Panel();
