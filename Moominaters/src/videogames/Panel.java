@@ -86,7 +86,7 @@ public class Panel  extends JPanel implements ActionListener{
 		
 		//Magnifying glass
 		if(mag){
-			Ellipse2D circle = new Ellipse2D.Float(x-25,y-25,50,50);
+			Ellipse2D circle = new Ellipse2D.Float(x-25,y-25,80,80);
 			g2d.setClip(circle);
 			g2d.drawImage(img[level][1-universe], 0,0, Globals.width,Globals.height,null);
 		}
@@ -115,8 +115,10 @@ public class Panel  extends JPanel implements ActionListener{
             	frozen = true;
             if(e.getKeyCode() == KeyEvent.VK_Q){
             	//If shift is held, switch universes
-            	if(frozen)   
+            	if(frozen) {
             		universe = 1 - universe;
+            		chac.setUniverse(universe);
+            	}
             	frozen = false;
             }
         }
