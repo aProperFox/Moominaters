@@ -25,7 +25,8 @@ public class Update {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setSize(Globals.width,Globals.height);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		//frame.setUndecorated(true);
 		frame.setTitle("Moominaters");
 		frame.setLocationRelativeTo(null);
 		try {
