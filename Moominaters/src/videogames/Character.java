@@ -26,7 +26,7 @@ public class Character {
 	private Boolean hasJumped;
 	
 	private int x,y;
-	private Point p1, p2;
+	private Point p1, p2, center;
 	private int mouseX, mouseY;
 	private int pastX, pastY;
 	private double dx,dy;
@@ -87,6 +87,7 @@ public class Character {
 		p2 = new Point(x +(3*chacWidth/4),y+chacHeight);
 		dx = 0;
 		dy = 0;
+		center = new Point(p1.x+chacWidth/4,p1.y-(chacHeight/2));
 		frozen = false;
 		imageCurr = 0;
 		 
@@ -111,10 +112,23 @@ public class Character {
 		return universe;
 	}
 	
+	public void update(int level){
+		this.level = level;
+		universe = 0;
+		Point temp = env.getInit(level);
+		x = temp.x;
+		y = temp.y;
+	}
+	
+	public Point getCenter(){
+		return center;
+	}
+	
    public void move() {
 	   if(!frozen){
-		p1 = new Point(x +(chacWidth/4),y+chacHeight);
-		p2 = new Point(x +(3*chacWidth/4),y+chacHeight);
+		p1 = new Point(x +(chacWidth/3),y+chacHeight);
+		p2 = new Point(x +(2*chacWidth/3),y+chacHeight);
+		center = new Point(p1.x+chacWidth/4,p1.y-(chacHeight/2));
 		
         x += dx;
         y += dy - (Globals.gravity)/2;
@@ -125,17 +139,25 @@ public class Character {
         else if(x <= 0)
         	x = 0;
     	int temp;
-        if((temp = env.checkRecs(level, universe, p1, p2) )!= 0){
+        if((temp = env.isTop(level, universe, p1, p2) )!= 0){
         	y = temp-chacHeight;
     	    dy = Globals.gravity/2;
-		    if(dir == 1)
-		        moominCurr = moomin[imageCurr];
-		    else
-			    moominCurr = moominl[imageCurr];
+    	    if(hasJumped){
+			    if(dir == 1)
+			        moominCurr = moomin[imageCurr];
+			    else
+				    moominCurr = moominl[imageCurr];
+    	    }
     	    hasJumped = false;
         }
         else
             dy += 0.10;
+        if((temp = env.isLeft(level, universe, p1, p2))!= 0){
+        	x = temp - (2*chacWidth/3);
+        }
+        if((temp = env.isRight(level,universe,p1,p2)) != 0){
+        	x = temp - (chacWidth/3);
+        }
         if(hasJumped == true){
         	if(dir == 1)
         		moominCurr = moomin[6];
@@ -192,6 +214,7 @@ public class Character {
             	moominCurr = moominl[6];
             else
             	moominCurr = moomin[6];
+
         }
 
         else if (key == KeyEvent.VK_S) {

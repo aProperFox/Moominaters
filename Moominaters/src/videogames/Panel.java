@@ -121,6 +121,13 @@ public class Panel  extends JPanel implements ActionListener{
             	}
             	frozen = false;
             }
+            if(e.getKeyCode() == KeyEvent.VK_W){
+	            if(chac.env.checExit(level, universe, chac.getCenter())){
+	            	level += 1;
+	            	universe = 0;
+	            	chac.update(level);
+	            }
+            }
         }
         
 
