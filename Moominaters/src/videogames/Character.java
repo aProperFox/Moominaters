@@ -9,32 +9,37 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 
 public class Character {
+	
+	
 	public Environment env;
 	
 	public Rectangle character;
-	public int chacWidth;
-	public int chacHeight;
+
 	private Image[] moomin;
 	private Image[] moominl;  
 	private Image moominCurr;
+	
+	private int imageCurr;
+	public int chacWidth;
+	public int chacHeight;
+	private int x,y;
+	private int mouseX, mouseY;
+	private int pastX, pastY;
 	private int dir;
 	private int level;
 	private int universe;
 	
 	public Magnify glass;
-	
-	private Boolean hasJumped;
-	
-	private int x,y;
-	private Point p1, p2;
-	private int mouseX, mouseY;
-	private int pastX, pastY;
+
+
+	private Point p1, p2, center;
+
 	private double dx,dy;
 	
+	private Boolean hasJumped;
 	private Boolean frozen;
 	private Boolean objectsDefined;
-	
-	private int imageCurr;
+
 	
 	public Character(){
 		env = new Environment();
@@ -81,12 +86,13 @@ public class Character {
 		chacHeight = Globals.height/6;
 		Globals.chacHeight = chacHeight;
 		Globals.chacWidth = chacWidth;
-		x = (Globals.width/2) - (Globals.chacWidth/2);
-		y = (Globals.height/2) - (Globals.chacHeight/2);
+		x = env.getInit(level).x;
+		y = env.getInit(level).y;
 		p1 = new Point(x +(chacWidth/4),y+chacHeight);
 		p2 = new Point(x +(3*chacWidth/4),y+chacHeight);
 		dx = 0;
 		dy = 0;
+		center = new Point(p1.x+chacWidth/2,p1.y+(chacHeight/2));
 		frozen = false;
 		imageCurr = 0;
 		 
@@ -111,10 +117,23 @@ public class Character {
 		return universe;
 	}
 	
+	public void update(int level){
+		this.level = level;
+		universe = 0;
+		Point temp = env.getInit(level);
+		x = temp.x;
+		y = temp.y - chacHeight;
+	}
+	
+	public Point getCenter(){
+		return center;
+	}
+	
    public void move() {
 	   if(!frozen){
-		p1 = new Point(x +(chacWidth/4),y+chacHeight);
-		p2 = new Point(x +(3*chacWidth/4),y+chacHeight);
+		p1 = new Point(x +(chacWidth/3),y+chacHeight);
+		p2 = new Point(x +(2*chacWidth/3),y+chacHeight);
+		center = new Point(x+chacWidth/2,y+(chacHeight/2));
 		
         x += dx;
         y += dy - (Globals.gravity)/2;
@@ -125,17 +144,25 @@ public class Character {
         else if(x <= 0)
         	x = 0;
     	int temp;
-        if((temp = env.checkRecs(level, universe, p1, p2) )!= 0){
+        if((temp = env.isTop(level, universe, p1, p2) )!= 0){
         	y = temp-chacHeight;
     	    dy = Globals.gravity/2;
-		    if(dir == 1)
-		        moominCurr = moomin[imageCurr];
-		    else
-			    moominCurr = moominl[imageCurr];
+    	    if(hasJumped){
+			    if(dir == 1)
+			        moominCurr = moomin[imageCurr];
+			    else
+				    moominCurr = moominl[imageCurr];
+    	    }
     	    hasJumped = false;
         }
         else
             dy += 0.10;
+        if((temp = env.isLeft(level, universe, p1, p2))!= 0){
+        	x = temp - (2*chacWidth/3);
+        }
+        if((temp = env.isRight(level,universe,p1,p2)) != 0){
+        	x = temp - (chacWidth/3);
+        }
         if(hasJumped == true){
         	if(dir == 1)
         		moominCurr = moomin[6];
@@ -192,12 +219,13 @@ public class Character {
             	moominCurr = moominl[6];
             else
             	moominCurr = moomin[6];
+
         }
 
         else if (key == KeyEvent.VK_S) {
         }
        
-        imageCurr = imageCurr % 6;
+        imageCurr = imageCurr % 5 + 1;
         
         if (key == KeyEvent.VK_SPACE){
         	if(hasJumped == false){
@@ -208,8 +236,8 @@ public class Character {
         }
         
         if (key == KeyEvent.VK_ENTER){
-        	x = Globals.width/2 -  chacWidth/2;
-        	y = Globals.height/2 - chacHeight/2;
+        	x = env.getInit(level).x;
+        	y = env.getInit(level).y-chacHeight;
         	dy = 0;
         }
         
@@ -221,6 +249,7 @@ public class Character {
         	if(frozen)
         		frozen = false;
         }
+        move();
     }
 	   
     public void keyReleased(KeyEvent e) {
