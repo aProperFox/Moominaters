@@ -36,12 +36,14 @@ public class Character {
 
 	private double dx,dy;
 	
+	private boolean isCtrl;
 	private Boolean hasJumped;
 	private Boolean frozen;
 	private Boolean objectsDefined;
 
 	
 	public Character(){
+		isCtrl = false;
 		env = new Environment();
 		hasJumped = true;
 		
@@ -181,6 +183,23 @@ public class Character {
 	   return y;
    }
    
+   public void setdX(double dx){
+	   this.dx = dx;
+   }
+   
+   public void setdY(double dy){
+	   this.dy = dy;
+   }
+   
+   public double getdX(){
+	   return dx;
+   }
+   
+   public double getdY(){
+	   return dy;
+   }
+   
+   
    public int getMouseX(){
 	   return mouseX;
    }
@@ -195,7 +214,7 @@ public class Character {
    public void setLevel(int level){
 	   this.level = level;
    }
-
+   
     public void keyPressed(KeyEvent e) {
 
         int key = e.getKeyCode();
@@ -246,8 +265,9 @@ public class Character {
         }
         
         if (key == KeyEvent.VK_Q){
-        	if(frozen)
-        		frozen = false;
+        }
+        if (key == KeyEvent.VK_CONTROL){
+        	isCtrl = true;
         }
         move();
     }
@@ -279,13 +299,24 @@ public class Character {
         if (key == KeyEvent.VK_SHIFT){
         	frozen = false;
         }
+        
+        if (key == KeyEvent.VK_CONTROL){
+        	isCtrl = false;
+        }
     }
     
     public void mousePressed(MouseEvent m){
     	int button = m.getButton();
     	mouseX = m.getX();
     	mouseY = m.getY();
+    	
+    	//If control is held, mouse will relocate character, only here for debugging
     	if(button == MouseEvent.BUTTON1){
+    		if(isCtrl){
+    			x = m.getX()-(chacWidth/2);
+    			y = m.getY()-(chacHeight/2);
+    			dx = dy = 0;
+    		}
     	}
     	
     	if(button == MouseEvent.BUTTON2){
