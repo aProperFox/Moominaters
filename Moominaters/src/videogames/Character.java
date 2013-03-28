@@ -8,6 +8,17 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 
+/* Controls
+~WASD to move
+~SPACE to jump
+~Hold SHIFT and press Q to change universes
+~Hold CTRL and click mouse to move yourself (for debugging)
+~Hold Middle Mouse Button to view alternate universe
+~Click Left Mouse Button to interact
+~Press N to change levels
+~Press Enter to reload level and properties
+*/
+
 public class Character {
 	
 	
@@ -18,7 +29,11 @@ public class Character {
 	private Image[] moomin;
 	private Image[] moominl;  
 	private Image moominCurr;
+	private Image[] device;
+	private Image currDevice;
 	
+	private int devW, devH;
+	private int rotate;
 	private int imageCurr;
 	public int chacWidth;
 	public int chacHeight;
@@ -33,10 +48,14 @@ public class Character {
 
 
 	private Point p1, p2, center;
+	private Point devLoc;
 
 	private double dx,dy;
 	
+	private boolean inc;
+	private boolean canDraw;
 	private boolean isCtrl;
+	private boolean neg;
 	private Boolean hasJumped;
 	private Boolean frozen;
 	private Boolean objectsDefined;
@@ -49,42 +68,66 @@ public class Character {
 		
 		glass = new Magnify();
 		
-		moomin = new Image[7];
-		moominl = new Image[7];
+		moomin = new Image[11];
+		moominl = new Image[11];
 		
-		ImageIcon ii = new ImageIcon("src/Sprites/muminright1.png");
+		device = new Image[10];
+		
+		ImageIcon ii = new ImageIcon("src/Sprites/muminright-4.png");
 		moomin[0] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminright2.png");
+		ii = new ImageIcon("src/Sprites/muminright-3.png");
 		moomin[1] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminright3.png");
+		ii = new ImageIcon("src/Sprites/muminright-2.png");
 		moomin[2] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminright4.png");
+		ii = new ImageIcon("src/Sprites/muminright-1.png");
 		moomin[3] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminright5.png");
+		ii = new ImageIcon("src/Sprites/muminright1.png");
 		moomin[4] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminright6.png");
+		ii = new ImageIcon("src/Sprites/muminright2.png");
 		moomin[5] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminjumpr.png");
+		ii = new ImageIcon("src/Sprites/muminright3.png");
 		moomin[6] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminright4.png");
+		moomin[7] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminjumpr.png");
+		moomin[8] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminrightslide.png");
+		moomin[9] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminrightattack.png");
+		moomin[10] = ii.getImage();
 		moominCurr = moomin[0];
 		dir = 1;
 		
-		ii = new ImageIcon("src/Sprites/muminleft1.png");
+		ii = new ImageIcon("src/Sprites/muminleft-4.png");
 		moominl[0] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminleft2.png");
+		ii = new ImageIcon("src/Sprites/muminleft-3.png");
 		moominl[1] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminleft3.png");
+		ii = new ImageIcon("src/Sprites/muminleft-2.png");
 		moominl[2] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminleft4.png");
+		ii = new ImageIcon("src/Sprites/muminleft-1.png");
 		moominl[3] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminleft5.png");
+		ii = new ImageIcon("src/Sprites/muminleft1.png");
 		moominl[4] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminleft6.png");
+		ii = new ImageIcon("src/Sprites/muminleft2.png");
 		moominl[5] = ii.getImage();
-		ii = new ImageIcon("src/Sprites/muminjumpl.png");
+		ii = new ImageIcon("src/Sprites/muminleft3.png");
 		moominl[6] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminleft4.png");
+		moominl[7] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminjumpl.png");
+		moominl[8] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminleftslide.png");
+		moominl[9] = ii.getImage();
+		ii = new ImageIcon("src/Sprites/muminleftattack.png");
+		moominl[10] = ii.getImage();
 		
-		chacWidth = Globals.width/13;
+		ii = new ImageIcon("src/Sprites/spatula.png");
+		device[0] = ii.getImage();
+		currDevice = device[0];
+		devW = 23;
+		devH = 100;
+		
+		chacWidth = Globals.width/12;
 		chacHeight = Globals.height/6;
 		Globals.chacHeight = chacHeight;
 		Globals.chacWidth = chacWidth;
@@ -94,11 +137,15 @@ public class Character {
 		p2 = new Point(x +(3*chacWidth/4),y+chacHeight);
 		dx = 0;
 		dy = 0;
+		devLoc = new Point(x+chacWidth-30,y+14);
 		center = new Point(p1.x+chacWidth/2,p1.y+(chacHeight/2));
 		frozen = false;
-		imageCurr = 0;
-		 
+		imageCurr = 4;
+		rotate = 0;
+		neg = false;
+		canDraw = false;
 		defineObjects();
+		inc = false;
 	}
 	
 	public void defineObjects(){
@@ -131,12 +178,69 @@ public class Character {
 		return center;
 	}
 	
+	public int getDir(){
+		return dir;
+	}
+	
+	public int getDevH(){
+		return devH;
+	}
+	
+	public int getDevW(){
+		return devW;
+	}
+	
+	public Image getDevice(){
+		return currDevice;
+	}
+	
+	public Point getDevLoc(){
+		return devLoc;
+	}
+	
+	public int getImageCurr(){
+		return imageCurr;
+	}
+	
+	public void draw(){
+		rotate += 1;
+		if(rotate % 5 == 0){
+			rotate = 0;
+			if(neg){
+				if(imageCurr == 0){
+					neg = false;
+					imageCurr +=1;							
+				}
+				else{
+					imageCurr -= 1;
+				}
+			}
+			else{
+				if(imageCurr == 7){
+					neg = true;
+					imageCurr -= 1;
+				}
+				else{
+					imageCurr += 1;
+				}
+			}
+			if(dir == 0){
+	            moominCurr = moominl[imageCurr];
+			}
+			else{
+	            moominCurr = moomin[imageCurr];
+			}
+		}
+	}
+	
    public void move() {
 	   if(!frozen){
 		p1 = new Point(x +(chacWidth/3),y+chacHeight);
 		p2 = new Point(x +(2*chacWidth/3),y+chacHeight);
 		center = new Point(x+chacWidth/2,y+(chacHeight/2));
 		
+		if(canDraw)
+			draw();
         x += dx;
         y += dy - (Globals.gravity)/2;
 	   
@@ -145,10 +249,15 @@ public class Character {
         }
         else if(x <= 0)
         	x = 0;
+    	int [] top = env.isTop(level, universe, p1, p2);
     	int temp;
-        if((temp = env.isTop(level, universe, p1, p2) )!= 0){
-        	y = temp-chacHeight;
+        if(top[1]!= 0){
+        	y = top[1]-chacHeight;
     	    dy = Globals.gravity/2;
+    	    if(inc){
+    	    	dx += top[0];
+    	    	inc = false;
+    	    }
     	    if(hasJumped){
 			    if(dir == 1)
 			        moominCurr = moomin[imageCurr];
@@ -157,8 +266,10 @@ public class Character {
     	    }
     	    hasJumped = false;
         }
-        else
+        else{
+        	inc = true;
             dy += 0.10;
+        }
         if((temp = env.isLeft(level, universe, p1, p2))!= 0){
         	x = temp - (2*chacWidth/3);
         }
@@ -167,12 +278,18 @@ public class Character {
         }
         if(hasJumped == true){
         	if(dir == 1)
-        		moominCurr = moomin[6];
+        		moominCurr = moomin[8];
         	else
-        		moominCurr = moominl[6];
+        		moominCurr = moominl[8];
         }
-
+		if(dir == 0){
+    		devLoc = new Point(x+11+imageCurr,y+14);
+		}
+		else{
+    		devLoc = new Point(x+chacWidth-30-imageCurr,y+14);
+		}
 	   }
+	   
     }
    
    public int getX(){
@@ -218,33 +335,36 @@ public class Character {
     public void keyPressed(KeyEvent e) {
 
         int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_A) {
-            dx = -1;
-            moominCurr = moominl[imageCurr];
-            imageCurr += 1;
-            dir = 0;
+        if(!frozen){
+	        if (key == KeyEvent.VK_A) {
+	        	canDraw = true;
+	            dx = -1;
+	            dir = 0;
+	        }
+	
+	        else if (key == KeyEvent.VK_D) {
+	        	canDraw = true;
+	        	dx = 1;
+	            dir = 1;
+	        }
+	
+	        if (key == KeyEvent.VK_W) {
+	            if(dir == 0)
+	            	moominCurr = moominl[4];
+	            else
+	            	moominCurr = moomin[4];
+	
+	        }
+	
+	        else if (key == KeyEvent.VK_S) {
+	        }
+	        
+	        if (key == KeyEvent.VK_ENTER){
+	        	x = env.getInit(level).x;
+	        	y = env.getInit(level).y-chacHeight;
+	        	dy = 0;
+	        }
         }
-
-        else if (key == KeyEvent.VK_D) {
-            dx = 1;
-            moominCurr = moomin[imageCurr];
-            imageCurr += 1;
-            dir = 1;
-        }
-
-        if (key == KeyEvent.VK_W) {
-            if(dir == 0)
-            	moominCurr = moominl[6];
-            else
-            	moominCurr = moomin[6];
-
-        }
-
-        else if (key == KeyEvent.VK_S) {
-        }
-       
-        imageCurr = imageCurr % 5 + 1;
         
         if (key == KeyEvent.VK_SPACE){
         	if(hasJumped == false){
@@ -252,12 +372,6 @@ public class Character {
 	        	dy = -10;
 	        	hasJumped = true;
         	}
-        }
-        
-        if (key == KeyEvent.VK_ENTER){
-        	x = env.getInit(level).x;
-        	y = env.getInit(level).y-chacHeight;
-        	dy = 0;
         }
         
         if (key == KeyEvent.VK_SHIFT){
@@ -269,33 +383,37 @@ public class Character {
         if (key == KeyEvent.VK_CONTROL){
         	isCtrl = true;
         }
+
+
         move();
     }
 	   
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_A) {
-            dx = 0;
-            moominCurr= moominl[0];
+        if(!frozen){
+	        if (key == KeyEvent.VK_A) {
+	            dx += 1;
+	            moominCurr= moominl[4];
+	            canDraw = false;
+	        }
+	
+	        if (key == KeyEvent.VK_D) {
+	            dx -= 1;
+	            moominCurr = moomin[4];
+	            canDraw = false;
+	        }
+	
+	        if (key == KeyEvent.VK_W) {
+	            if(dir == 0)
+	            	moominCurr = moominl[4];
+	            else
+	            	moominCurr = moomin[4];
+	        }
+	
+	        if (key == KeyEvent.VK_S) {
+	           //dy = 0;
+	        }
         }
-
-        if (key == KeyEvent.VK_D) {
-            dx = 0;
-            moominCurr = moomin[0];
-        }
-
-        if (key == KeyEvent.VK_W) {
-            if(dir == 0)
-            	moominCurr = moominl[0];
-            else
-            	moominCurr = moomin[0];
-        }
-
-        if (key == KeyEvent.VK_S) {
-           //dy = 0;
-        }
-        
         if (key == KeyEvent.VK_SHIFT){
         	frozen = false;
         }
@@ -317,6 +435,19 @@ public class Character {
     			y = m.getY()-(chacHeight/2);
     			dx = dy = 0;
     		}
+    		else{
+    			frozen = true;
+    			imageCurr = 10;
+    			if(dir == 0){
+    				devLoc = new Point(x+30,y-10);
+        			moominCurr = moominl[imageCurr];
+    			}
+    			else{
+    				devLoc = new Point(x+chacWidth-50,y-10);
+        			moominCurr = moomin[imageCurr];
+    			}
+
+    		}
     	}
     	
     	if(button == MouseEvent.BUTTON2){
@@ -329,6 +460,16 @@ public class Character {
     	int button = m.getButton();
 
     	if(button == MouseEvent.BUTTON1){
+    		frozen = false;
+    		imageCurr = 4;
+			if(dir == 0){
+				devLoc = new Point(x+11,y+14);
+    			moominCurr = moominl[imageCurr];
+			}
+			else{
+	    		devLoc = new Point(x+chacWidth-30-imageCurr,y+14);
+    			moominCurr = moomin[imageCurr];
+			}
     	}
     	
     	if(button == MouseEvent.BUTTON2){

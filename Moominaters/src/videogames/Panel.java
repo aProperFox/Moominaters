@@ -2,15 +2,18 @@ package videogames;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
+import java.awt.Transparency;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -18,7 +21,6 @@ public class Panel  extends JPanel implements Runnable{
 
 	
 	private Character chac;
-	private Animate anime;
 	
 	private Image[][] img;
 	private Boolean mag, frozen;
@@ -30,7 +32,6 @@ public class Panel  extends JPanel implements Runnable{
 	private Thread animator;
 	
 	public Panel(){
-		anime = new Animate();
 		img = new Image[10][2];
 		magnify = new Magnify();
 		mag = frozen = false;
@@ -44,17 +45,15 @@ public class Panel  extends JPanel implements Runnable{
         chac = new Character();
         
 	    }  
-
+	
 	
 	//Paint background, call animate's draw functions, draw character, handle mag glass
 	public void paint(Graphics g){
 		super.paint(g);
-		Graphics g2d = (Graphics2D) g;
-		anime.update();
-		anime.paint(g);
-		
-		//Draw Moomin
-		g2d.drawImage(chac.getMoomin(),chac.getX(),chac.getY(),Globals.chacWidth,Globals.chacHeight,null);
+		Graphics2D g2d = (Graphics2D) g;
+		chac.env.update();
+		chac.env.paint(g);
+		chac.env.update(level, universe, chac.env.getMovePlat(0));
 		
 		//Get mouse info
 		PointerInfo a = MouseInfo.getPointerInfo();
@@ -67,8 +66,22 @@ public class Panel  extends JPanel implements Runnable{
 			Ellipse2D circle = new Ellipse2D.Float(x-25,y-25,80,80);
 			g2d.drawOval(x-26,y-26,82,82);
 			g2d.setClip(circle);
-			anime.drawEnv(g2d,level,1-universe);
+			chac.env.drawEnv(g2d,level,1-universe);
 		}
+		
+		//Draw Moomin
+		g2d.drawImage(chac.getMoomin(),chac.getX(),chac.getY(),Globals.chacWidth,Globals.chacHeight,null);
+		
+		int rot = chac.getImageCurr();
+		if(chac.getDir() == 0){
+			g2d.rotate(Math.toRadians(rot), chac.getDevLoc().x, chac.getDevLoc().y);
+			g2d.drawImage(chac.getDevice(),chac.getDevLoc().x,chac.getDevLoc().y,chac.getDevW(),chac.getDevH(),null);
+		}
+		else{
+			g2d.rotate(Math.toRadians(-rot), chac.getDevLoc().x, chac.getDevLoc().y);
+			g2d.drawImage(chac.getDevice(),chac.getDevLoc().x,chac.getDevLoc().y,chac.getDevW(),chac.getDevH(),null);
+		}
+
 		g.dispose();
 		
 	}
@@ -77,9 +90,9 @@ public class Panel  extends JPanel implements Runnable{
     public void animationCycle() {
         chac.move();
     	if(chac.env.isInside(level, universe, chac.getCenter())== true){
-    		if(anime.getRepitition() > 0)
-    			if(Math.abs(chac.getdY()) < Math.abs((-anime.getRepitition())*2))
-    				chac.setdY(-(anime.getRepitition()*2));
+    		if(chac.env.getRepitition() > 0)
+    			if(Math.abs(chac.getdY()) < Math.abs((-chac.env.getRepitition())*2))
+    				chac.setdY(-(chac.env.getRepitition()*2));
     	}
     }
 
@@ -135,7 +148,7 @@ public class Panel  extends JPanel implements Runnable{
             	if(frozen) {
             		universe = 1 - universe;
             		chac.setUniverse(universe);
-                	anime.changeUniverse(universe);
+                	chac.env.changeUniverse(universe);
             	}
             }
             if(e.getKeyCode() == KeyEvent.VK_W){
@@ -143,8 +156,8 @@ public class Panel  extends JPanel implements Runnable{
 	            	level += 1;
 	            	universe = 0;
 	            	chac.update(level);
-	            	anime.changeLevel(level);
-	            	anime.changeUniverse(universe);
+	            	chac.env.changeLevel(level);
+	            	chac.env.changeUniverse(universe);
 	            }
             }
             
@@ -152,11 +165,11 @@ public class Panel  extends JPanel implements Runnable{
             	level += 1;
             	universe = 0;
             	chac.update(level);
-            	anime.changeLevel(level);
-            	anime.changeUniverse(universe);
+            	chac.env.changeLevel(level);
+            	chac.env.changeUniverse(universe);
             }
             if(e.getKeyCode() == KeyEvent.VK_ENTER){
-            	anime.init();
+            	chac.env.init();
             }
         }
         
@@ -169,11 +182,11 @@ public class Panel  extends JPanel implements Runnable{
         	//Called for point and click interactivity
         	if(m.getButton() == MouseEvent.BUTTON1){
 	            if(chac.env.checkInter(level, universe, mouse)){
-	            	if(anime.getRepitition() >= 5){
-	            		anime.repeat(0);
+	            	if(chac.env.getRepitition() >= 5){
+	            		chac.env.repeat(0);
 	            	}
 	            	else
-		            	anime.repeat(1);
+		            	chac.env.repeat(1);
 	            }
         	}
         	if(m.getButton() == MouseEvent.BUTTON2){
